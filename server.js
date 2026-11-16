@@ -1,14 +1,14 @@
+require('dotenv').config();
+
+if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is missing. Please set it in your .env file.');
+}
+
 const app = require('./app');
 
-const port = process.env.PORT || 3000;
+const port = Number(process.env.PORT) || 3000;
 
 app.listen(port, () => {
     console.log(`server is running on port ${port}`);
 });
 
-require('dotenv').config();
-
-console.log(
-    "JWT secret loaded:",
-    Boolean(process.env.JWT_SECRET)
-);
