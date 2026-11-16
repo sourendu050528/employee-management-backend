@@ -123,7 +123,7 @@ const updateEmployee = async (req, res) => {
         const { id } = req.params;
         const { name, city, department } = req.body;
 
-        // Validate input fields
+    
         if (!name || typeof name !== "string" || !name.trim()) {
             return res.status(400).json({
                 message: "Please enter a valid name"
@@ -142,7 +142,6 @@ const updateEmployee = async (req, res) => {
             });
         }
 
-        // Check whether employee exists
         const exists = await pool.query(
             "SELECT id FROM employee WHERE id = $1",
             [id]
@@ -154,7 +153,6 @@ const updateEmployee = async (req, res) => {
             });
         }
 
-        // Update employee
         const result = await pool.query(
             `UPDATE employee
              SET name = $1, city = $2, department = $3
