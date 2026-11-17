@@ -16,6 +16,12 @@ const registerUser = async (req,res)=>{
             });
         }
 
+        if (!email.endsWith("@gmail.com")){
+            return res.status(400).json({
+                message:"Please enter a valid gmail"
+            })
+        }
+
         const normalizedEmail = email.trim().toLowerCase();
 
        
