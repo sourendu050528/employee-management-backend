@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const registerUser = async (req,res)=>{
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
 
         if (
             typeof name !== 'string' || !name.trim() ||
@@ -14,6 +14,11 @@ const registerUser = async (req,res)=>{
             return res.status(400).json({
                 message: 'Enter a valid name, email and password of at least 8 characters'
             });
+        }
+        if (!["Admin","Manager","Employee"].includes(role)){
+            return res.status(400).json({
+                message:"Enter a valid role"
+            })
         }
 
         if (!email.endsWith("@gmail.com")){
@@ -41,10 +46,10 @@ const registerUser = async (req,res)=>{
 
        
         const result = await pool.query(
-            `INSERT INTO users (name, email, password)
-             VALUES ($1, $2, $3)
-             RETURNING id, name, email`,
-            [name.trim(), normalizedEmail, hashedPassword]
+            `INSERT INTO users (name, email, password,role)
+             VALUES ($1, $2, $3, $4)
+             RETURNING id, name, email, role`,
+            [name.trim(), normalizedEmail, hashedPassword,role]
         );
 
         return res.status(201).json({
@@ -106,7 +111,8 @@ const loginUser = async (req, res) => {
         const token = jwt.sign(
             {
                 userId: user.id,
-                email: user.email
+                email: user.email,
+                role: user.role
             },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
